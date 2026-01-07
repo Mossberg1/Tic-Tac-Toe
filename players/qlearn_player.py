@@ -1,4 +1,5 @@
 from player import Player
+from typing import Optional
 from game.logic import TicTacToe
 from game.symbol import Symbol
 from collections import defaultdict
@@ -10,7 +11,7 @@ class QLearnPlayer(Player):
     """ Q-Learning Agent to play Tic Tac Toe """
     
     def __init__(self, symbol, learning_rate=0.1, discount_rate=0.9, epsilon=0.1):
-        super().__init__(self, symbol)
+        super().__init__(symbol)
         self.learning_rate = learning_rate
         self.discount_rate = discount_rate
         self.epsilon = epsilon
@@ -18,7 +19,7 @@ class QLearnPlayer(Player):
         self._q_table = dict()
     
     
-    def get_move(self, game: TicTacToe):
+    def get_move(self, game: TicTacToe) -> Optional[tuple[int, int]]:
         """ Get the best move """
         state = game.get_board_state()
         moves = game.get_legal_moves()
@@ -42,7 +43,7 @@ class QLearnPlayer(Player):
         try: 
             best_q = np.max(self._q_table[state])
             prev_q = self._q_table[last_state][action_index]
-            self._q_table[last_state][action_index] += self._learning_rate * (reward + self._discount_factor * best_q - prev_q)
+            self._q_table[last_state][action_index] += self.learning_rate * (reward + self.discount_rate * best_q - prev_q)
         except IndexError as ex:
             print(f'Index out of range: {ex}')    
     

@@ -50,8 +50,9 @@ class GameSimulator:
                     self._n_draws += 1
                 case _ :
                     self._n_losses += 1    
-            
+            print(f"Game {i} finished")
             self.game.reset()  
+
         
     
     def plot(self):
