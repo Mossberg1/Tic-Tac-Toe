@@ -34,10 +34,7 @@ class QLearnPlayer(Player):
         if random.random() < self.epsilon:
             return random.choice(moves)
         
-        #try:
         q_values = {move: self._q_table[state][move] for move in moves}
-        #except KeyError:
-            #return random.choice(moves)
         
         best_action = max(q_values, key=q_values.get)
         return best_action

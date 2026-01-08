@@ -3,6 +3,7 @@ from players.minimax_player import MinimaxPlayer
 from trainers.qlearn import QLearnTrainer
 from players.qlearn_player import QLearnPlayer
 from players.random_player import RandomPlayer
+from players.perfect_strategy_player import PerfectStrategyPlayer
 from game.symbol import Symbol
 import argparse
 
@@ -31,17 +32,23 @@ if args.load is None:
 
     trainer.plot()
 else:
-
     agent = QLearnPlayer(agent_symbol, epsilon=0)
     agent.load(args.load)
 
 n_simulations = 100
 
 opponent = RandomPlayer(opponent_symbol)
-# opponent = MinimaxPlayer(opponent_symbol)
 simulator = GameSimulator(agent, opponent, n_simulations, Symbol.X)
-
 simulator.simulate()
 simulator.plot()
 
+opponent = PerfectStrategyPlayer(opponent_symbol)
+simulator = GameSimulator(agent, opponent, n_simulations, Symbol.X)
+simulator.simulate()
+simulator.plot()
+
+opponent = MinimaxPlayer(opponent_symbol)
+simulator = GameSimulator(agent, opponent, n_simulations, Symbol.X)
+simulator.simulate()
+simulator.plot()
 

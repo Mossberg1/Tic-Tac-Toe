@@ -50,7 +50,7 @@ class GameSimulator:
                     self._n_draws += 1
                 case _ :
                     self._n_losses += 1    
-            print(f"Game {i} finished")
+
             self.game.reset()  
 
         
@@ -63,7 +63,9 @@ class GameSimulator:
         plt.figure(figsize=(8, 5))
         plt.bar(categories, values, color=['green', 'blue', 'red'])
         
-        plt.title('Game Results')
+        tracked_player = self.player1 if self.player1.symbol != self._tracked_player else self.player2
+        
+        plt.title(f'Game Results against: {type(tracked_player).__name__}')
         plt.ylabel('Count')
         
         for i, v in enumerate(values):

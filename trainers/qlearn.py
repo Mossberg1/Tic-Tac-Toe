@@ -23,10 +23,12 @@ class QLearnTrainer():
         self._n_losses = 0
         self._history = list()
         self._n_games_played = 0
+        self._opponent_name = ''
     
     
     def train(self, agent: QLearnPlayer, opponent: Player, n_games: int, savepath: str):
         self._n_games_played = n_games
+        self._opponent_name = type(opponent).__name__
         
         game = TicTacToe()
         
@@ -93,7 +95,7 @@ class QLearnTrainer():
         plt.plot(df['draw_rate'], label='Draw Rate', color='blue', linestyle='--')
         plt.plot(df['loss_rate'], label='Loss Rate', color='red', linestyle='--')
         
-        plt.title('Agent Learning Curve (vs Reference Policy Only)')
+        plt.title(f'Agent Learning Curve against: {self._opponent_name}')
         plt.xlabel('Games Played')
         plt.ylabel('Rate')
         plt.legend()
