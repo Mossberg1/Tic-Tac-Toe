@@ -4,7 +4,11 @@ from game.logic import TicTacToe
 from game.symbol import Symbol
 from collections import defaultdict
 import random
-import numpy as np
+import pickle
+
+
+def default_value():
+    return defaultdict(float)
 
 
 class QLearnPlayer(Player):    
@@ -12,44 +16,56 @@ class QLearnPlayer(Player):
     
     def __init__(self, symbol, learning_rate=0.1, discount_rate=0.9, epsilon=0.1):
         super().__init__(symbol)
-        self.learning_rate = learning_rate
-        self.discount_rate = discount_rate
-        self.epsilon = epsilon
+        self.learning_rate = learning_rate  # α (alpha)
+        self.discount_rate = discount_rate  # γ (gamma)
+        self.epsilon = epsilon  # exploration rate
         
-        self._q_table = defaultdict(lambda: np.zeros(9))
+        self._q_table = defaultdict(default_value)
     
     
     def get_move(self, game: TicTacToe) -> Optional[tuple[int, int]]:
-        """ Get the best move """
+        """ Get the best move using epsilon-greedy policy """
         state = game.get_board_state()
         moves = game.get_legal_moves()
         
         if len(moves) == 0:
-            pass
+            return None
         
         if random.random() < self.epsilon:
             return random.choice(moves)
         
-        action = max(self._q_table[state], key=self._q_table[state].get) # Choose q-value with highest value.
+        #try:
+        q_values = {move: self._q_table[state][move] for move in moves}
+        #except KeyError:
+            #return random.choice(moves)
         
-        return action
+        best_action = max(q_values, key=q_values.get)
+        return best_action
+    
+    
+    def learn(self, last_state, last_action, reward, next_state, done=False):
+
+        current_q = self._q_table[last_state][last_action]
         
-    
-    def learn(self, last_state, last_action, reward, state):
-        """ Make it possible for the agent to learn. """
-        row, col = last_action
-        action_index = row * 3 + col
+        if done:
+            self._q_table[last_state][last_action] = reward
+            return
+
+        next_state_q_values = self._q_table[next_state].values()
+        max_future_q = max(next_state_q_values) if next_state_q_values else 0
         
-        best_q = np.max(self._q_table[state])
-        prev_q = self._q_table[last_state][action_index]
+        new_q = current_q + self.learning_rate * (reward + self.discount_rate * max_future_q - current_q)
         
-        self._q_table[last_state][action_index] += self.learning_rate * (reward + self.discount_rate * best_q - prev_q)  
+        self._q_table[last_state][last_action] = new_q
+    
+    def load(self, filename):
+        """ Load Q-table from file """
+        with open(filename, 'rb') as f:
+            self._q_table = pickle.load(f)
     
     
-    def load(self):
-        pass
-    
-    
-    def save(self):
-        pass
-    
+    def save(self, filename):
+        """ Save Q-table to file """
+        with open(filename, 'wb+') as f:
+            pickle.dump(self._q_table, f)
+

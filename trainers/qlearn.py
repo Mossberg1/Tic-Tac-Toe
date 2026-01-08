@@ -1,6 +1,6 @@
 from game.winner_state import WinnerState
+from players.player import Player
 from players.qlearn_player import QLearnPlayer
-from players.qlearn_player_viktor import QLearnPlayerViktor
 from players.minimax_player import MinimaxPlayer
 from players.random_player import RandomPlayer
 from game.symbol import Symbol
@@ -25,11 +25,8 @@ class QLearnTrainer():
         self._n_games_played = 0
     
     
-    def train(self, agent: QLearnPlayerViktor, n_games: int):
+    def train(self, agent: QLearnPlayer, opponent: Player, n_games: int, savepath: str):
         self._n_games_played = n_games
-        
-        agent.symbol = Symbol.X
-        opponent = MinimaxPlayer(Symbol.O, 2)
         
         game = TicTacToe()
         
@@ -61,21 +58,25 @@ class QLearnTrainer():
             
             match (game.winner):
                 case agent.symbol:
-                    agent.learn(last_state, last_action, WIN_REWARD, current_state)
+                    agent.learn(last_state, last_action, WIN_REWARD, current_state, True)
                     self._n_wins += 1
                     self._history.append(1)
                 case WinnerState.DRAW:
-                    agent.learn(last_state, last_action, DRAW_REWARD, current_state)
+                    agent.learn(last_state, last_action, DRAW_REWARD, current_state, True)
                     self._n_draws += 1
                     self._history.append(0)
                 case _ :
-                    agent.learn(last_state, last_action, LOSS_PENALTY, current_state)
+                    agent.learn(last_state, last_action, LOSS_PENALTY, current_state, True)
                     self._n_losses += 1  
                     self._history.append(-1)
             
             game.reset()
-        
-        #agent.save("../models/model.pkl")
+            agent.epsilon *= 0.99995
+
+        if not savepath.endswith('.pkl'):
+            savepath += '.pkl'
+
+        agent.save(savepath)
     
     
     def plot(self):
