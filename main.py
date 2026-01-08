@@ -16,24 +16,29 @@ args = parser.parse_args()
 agent_symbol = Symbol.X
 opponent_symbol = Symbol.O
 
-agent = QLearnPlayer(agent_symbol)
 
 if args.load is None:
     trainer = QLearnTrainer()
+    agent = QLearnPlayer(agent_symbol)
 
     depths = [1,2,4,6,8,10]
     n_epochs = 100_000
+
+    trainer.train(agent, RandomPlayer(opponent_symbol), n_epochs, saved_model)
 
     for depth in depths:
         trainer.train(agent, MinimaxPlayer(opponent_symbol, depth), n_epochs, saved_model)
 
     trainer.plot()
 else:
+
+    agent = QLearnPlayer(agent_symbol, epsilon=0)
     agent.load(args.load)
 
 n_simulations = 100
 
-opponent = MinimaxPlayer(opponent_symbol)
+opponent = RandomPlayer(opponent_symbol)
+# opponent = MinimaxPlayer(opponent_symbol)
 simulator = GameSimulator(agent, opponent, n_simulations, Symbol.X)
 
 simulator.simulate()
