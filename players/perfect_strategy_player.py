@@ -30,17 +30,4 @@ class PerfectStrategyPlayer(Player):
         except KeyError:
             return random.choice(valid_moves) if valid_moves else None
         
-        """
-        state = game.get_board_state()
-        valid_moves = game.get_legal_moves()
-
-        try:
-            action_probs = self._q_table[state]
-            chosen_relative_index = np.argmax(action_probs)
-            chosen_absolute_index = valid_moves[chosen_relative_index]
-            
-            return (chosen_absolute_index % 3, chosen_absolute_index // 3)
-        except KeyError:
-            return random.choice(valid_moves) if valid_moves else None
-        """
                 
