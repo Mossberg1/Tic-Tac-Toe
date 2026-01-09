@@ -151,7 +151,6 @@ class GuiGameController:
         self.game = game
         self.human_symbol = human_symbol
         self.agent = agent
-        self.game_over = False
         self.last_ai_move_time = 0
         self.ai_move_delay = 0.5  # Delay in seconds before AI makes a move
 
@@ -159,13 +158,12 @@ class GuiGameController:
         """Reset the game state and GUI"""
         self.game.reset()
         self.gui.clear()
-        self.game_over = False
         self.last_ai_move_time = 0
         self.gui.update()
 
     def handle_click(self, pos):
         """Handle mouse click events"""
-        if self.game_over or self.game.game_over:
+        if self.game.game_over:
             return
 
         # Only allow clicks when it's the human's turn
@@ -181,7 +179,7 @@ class GuiGameController:
 
     def make_ai_move(self):
         """Make the AI player's move"""
-        if self.game_over or self.game.game_over:
+        if self.game.game_over:
             return
 
         if self.game.current_player != self.agent.symbol:
@@ -196,7 +194,6 @@ class GuiGameController:
             self.gui.draw_figures(self.game.board)
 
             if self.game.game_over:
-                self.game_over = True
                 self.gui.draw_game_over(self.game.winner)
 
             self.gui.update()
@@ -213,7 +210,7 @@ class GuiGameController:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.gui.quit()
-                elif event.type == pygame.MOUSEBUTTONDOWN and not self.game_over:
+                elif event.type == pygame.MOUSEBUTTONDOWN and not self.game.game_over:
                     self.handle_click(event.pos)
                 elif event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_r:
@@ -222,7 +219,7 @@ class GuiGameController:
                         self.gui.quit()
 
             # Make AI move if it's AI's turn
-            if not self.game_over and not self.game.game_over:
+            if not self.game.game_over:
                 if self.game.current_player == self.agent.symbol:
                     if current_time - self.last_ai_move_time >= self.ai_move_delay:
                         self.make_ai_move()
