@@ -1,10 +1,13 @@
+# Import Modules
 from abc import ABC, abstractmethod
 from game.symbol import Symbol
 from game.logic import TicTacToe
 from typing import Optional, Tuple
 
+# Abstract Player Base Class
 class Player(ABC):
     def __init__(self, symbol: Symbol):
+        # Guard aginst invalid symbols
         if symbol != Symbol.X and symbol != Symbol.O:
             raise ValueError()  
         
