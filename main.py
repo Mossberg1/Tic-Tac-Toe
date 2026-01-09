@@ -31,6 +31,24 @@ if args.load is None:
         trainer.train(agent, MinimaxPlayer(opponent_symbol, depth), n_epochs, saved_model)
 
     trainer.plot()
+
+    #Second training with reversed symbols
+    # agent_symbol = Symbol.O
+    # opponent_symbol = Symbol.X
+    # agent = QLearnPlayer(agent_symbol)
+    # agent.load(saved_model)
+    #
+    # depths = [1,2,4,6,8,10]
+    # n_epochs = 100_000
+    #
+    # trainer.train(agent, RandomPlayer(opponent_symbol), n_epochs, saved_model)
+    #
+    # for depth in depths:
+    #     trainer.train(agent, MinimaxPlayer(opponent_symbol, depth), n_epochs, saved_model)
+    #
+    # trainer.plot()
+
+
 else:
     agent = QLearnPlayer(agent_symbol, epsilon=0)
     agent.load(args.load)
