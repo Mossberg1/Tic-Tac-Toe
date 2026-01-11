@@ -1,7 +1,7 @@
+# Import Modules
 from players.player import Player
 from game.logic import TicTacToe
 import random
-
 
 class RandomPlayer(Player):
     """ A agent that plays randomly """
