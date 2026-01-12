@@ -71,14 +71,14 @@ class TicTacToeGUI:
         """Draw X's and O's based on board state"""
         for row in range(self.BOARD_ROWS):
             for col in range(self.BOARD_COLS):
-                if board[row][col] == 1:
+                if board[row][col] == 2:
                     # Draw O (circle)
                     center = (int(col * self.SQUARE_SIZE + self.SQUARE_SIZE // 2),
                              int(row * self.SQUARE_SIZE + self.SQUARE_SIZE // 2))
                     pygame.draw.circle(self.screen, self.CIRCLE_COLOR, 
                                      center, self.CIRCLE_RADIUS, self.CIRCLE_WIDTH)
                 
-                elif board[row][col] == 2:
+                elif board[row][col] == 1:
                     # Draw X (cross)
                     start_x = col * self.SQUARE_SIZE + self.SPACE
                     start_y = row * self.SQUARE_SIZE + self.SPACE
@@ -207,15 +207,16 @@ class GuiGameController:
         while True:
             current_time = time.time()
 
+            # catch pygame events
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.gui.quit()
-                elif event.type == pygame.MOUSEBUTTONDOWN and not self.game.game_over:
+                elif event.type == pygame.MOUSEBUTTONDOWN and not self.game.game_over: # mouse was clicked.
                     self.handle_click(event.pos)
-                elif event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_r:
+                elif event.type == pygame.KEYDOWN: # Keyboard was pressed
+                    if event.key == pygame.K_r: # r was clicked
                         self.reset_game()
-                    elif event.key == pygame.K_q:
+                    elif event.key == pygame.K_q: # q was clicked
                         self.gui.quit()
 
             # Make AI move if it's AI's turn
@@ -236,15 +237,20 @@ class GuiGameController:
 
 
 if __name__ == '__main__':
+    # Handle commandline arguments
     parser = argparse.ArgumentParser(description='Play Tic Tac Toe against an Agent')
+    
+    # Argument to choose a symbol for the human player
     parser.add_argument('--player', type=str, choices=['X', 'O'], required=True,
                         help='Choose your symbol: X or O')
 
+    # Argument to choose agent type
     parser.add_argument('--agent', type=str,
                         choices=['minimax', 'qlearn', 'random', 'perfect'],
                         required=True,
                         help='Choose the AI opponent: minimax, qlearn, random, or perfect')
 
+    # Set path to trained q-learn model
     parser.add_argument('--model', type=str, default=None,
                         help='Path to trained Q-learning model (required for qlearn agent) ex models/model.pkl')
 

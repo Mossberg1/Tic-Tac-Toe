@@ -24,7 +24,7 @@ class TicTacToe:
             self.game_over = True
             self.winner = 0  # Draw
         else:
-            self.current_player = 3 - self.current_player  # Switch between 1 and 2
+            self.current_player = 3 - self.current_player  # Switch players
 
         return True
 
@@ -32,15 +32,17 @@ class TicTacToe:
         """Check if a move is valid"""
         if self.game_over:
             return False
-        if row < 0 or row >= 3 or col < 0 or col >= 3:
+        if row < 0 or row >= 3 or col < 0 or col >= 3: # Check if move is inside the board.
             return False
-        return self.board[row][col] == 0
+        
+        return self.board[row][col] == 0 # Check if position is empty
 
     def get_legal_moves(self) -> List[Tuple[int, int]]:
         """Return list of all legal moves as (row, col) tuples"""
         moves: List[Tuple[int, int]] = []
         for row in range(3):
             for col in range(3):
+                # Append only empty positions
                 if self.board[row][col] == 0:
                     moves.append((row, col))
         return moves
@@ -49,6 +51,7 @@ class TicTacToe:
         """Check if the board is completely filled"""
         for row in range(3):
             for col in range(3):
+                # If i empty position is found break early. 
                 if self.board[row][col] == 0:
                     return False
         return True

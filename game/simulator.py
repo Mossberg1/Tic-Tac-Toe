@@ -18,9 +18,8 @@ class GameSimulator:
         self.player2 = player2
         self.n_simulations = n_simulations
         
-        self._tracked_player = player_to_track
-        
         # Properties to plot after simulation.
+        self._tracked_player = player_to_track
         self._n_wins = 0
         self._n_draws = 0
         self._n_losses = 0
@@ -32,17 +31,19 @@ class GameSimulator:
             while self.game.game_over == False: 
                 move = None
                 
-                if self.game.current_player == self.player1.symbol:
+                if self.game.current_player == self.player1.symbol: # Player 1s turn.
                     move = self.player1.get_move(self.game)
                 else: # Is player 2s turn.
                     move = self.player2.get_move(self.game)
                 
+                # Make the move.
                 if move is not None:
                     row, col = move
                     self.game.make_move(row, col)
                 else: # Should never happen because if move is None game should be over. 
-                    raise ValueError()
-                
+                    raise ValueError("Error: Move was None")
+             
+            # Get the winner.   
             match (self.game.winner):
                 case self._tracked_player: # Check if the tracked player has won. 
                     self._n_wins += 1

@@ -106,27 +106,32 @@ class QLearnTrainer():
 
         agent.save(savepath)
     
-    def plot(self):
+    def plot(self, window_size=500):
         """ Method to plot wins, draws and losses for the tracked agent. """
-        df = pd.DataFrame(self._history, columns=['result'])
-        print(self._n_games_played)
-        window_size = int(self._n_games_played / 10)
-        df['win_rate'] = df['result'].apply(lambda x: 1 if x == 1 else 0).rolling(window=window_size).mean()
-        df['loss_rate'] = df['result'].apply(lambda x: 1 if x == -1 else 0).rolling(window=window_size).mean()
-        df['draw_rate'] = df['result'].apply(lambda x: 1 if x == 0 else 0).rolling(window=window_size).mean()
+        if not self._history:
+            print("No training history to plot. Please run train() first.")
+            return
+
+        df = pd.DataFrame({'outcome': self._history})
+
+        df['Win Rate'] = (df['outcome'] == 1).rolling(window=window_size).mean() * 100
+        df['Draw Rate'] = (df['outcome'] == 0).rolling(window=window_size).mean() * 100
+        df['Loss Rate'] = (df['outcome'] == -1).rolling(window=window_size).mean() * 100
 
         plt.figure(figsize=(12, 6))
-        plt.plot(df['win_rate'], label='Win Rate', color='green')
-        plt.plot(df['draw_rate'], label='Draw Rate', color='blue', linestyle='--')
-        plt.plot(df['loss_rate'], label='Loss Rate', color='red', linestyle='--')
         
-        plt.title(f'Agent Learning Curve against: {self._opponent_name}')
-        plt.xlabel('Games Played')
-        plt.ylabel('Rate')
-        plt.legend()
-        plt.grid(True, alpha=0.3)
-        plt.show()
+        plt.plot(df.index, df['Win Rate'], label='Win Rate', color='green', linewidth=2)
+        plt.plot(df.index, df['Draw Rate'], label='Draw Rate', color='orange', linewidth=1.5, linestyle='--')
+        plt.plot(df.index, df['Loss Rate'], label='Loss Rate', color='red', linewidth=1.5, linestyle=':')
 
+        plt.title(f'Learning Curve vs {self._opponent_name}')
+        plt.xlabel('Game Number')
+        plt.ylabel('Rate (%)')
+        plt.legend(loc='center right')
+        plt.grid(True, alpha=0.3)
+        plt.ylim(-5, 105)
+
+        plt.show()
 
         
             
