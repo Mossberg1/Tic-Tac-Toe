@@ -9,12 +9,6 @@ class MinimaxPlayer(Player):
     """AI using Minimax algorithm with alpha-beta pruning"""
 
     def __init__(self, symbol: Symbol) -> None:
-        """
-        Initialize Minimax player
-
-        Args:
-            player_number: 1 or 2
-        """
         super().__init__(symbol)
         self.nodes_explored = 0
 
@@ -23,8 +17,6 @@ class MinimaxPlayer(Player):
         """Get best move using minimax with alpha-beta pruning"""
         self.nodes_explored = 0
         
-        # Clear the cache if desired, this decreases performance during training.
-        #self.transposition_table.clear() 
         legal_moves = game.get_legal_moves()
         
         if not legal_moves:
