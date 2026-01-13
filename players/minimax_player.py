@@ -11,10 +11,17 @@ class MinimaxPlayer(Player):
     def __init__(self, symbol: Symbol) -> None:
         super().__init__(symbol)
         self.nodes_explored = 0
+        self.move_cache: Dict[Tuple, Tuple[int, int]] = {}
 
 
     def get_move(self, game: 'TicTacToe') -> Optional[Tuple[int, int]]:
         """Get best move using minimax with alpha-beta pruning"""
+
+        #Check move cache first
+        board_state = game.get_board_state()
+        if board_state in self.move_cache:
+            return self.move_cache[board_state]
+            
         self.nodes_explored = 0
         
         legal_moves = game.get_legal_moves()
@@ -49,6 +56,10 @@ class MinimaxPlayer(Player):
             # Update alpha
             alpha = max(alpha, value)
         
+        #Cache the best move 
+        if best_move:
+            self.move_cache[board_state] = best_move
+
         # Return the best move we found
         return best_move
     
