@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 
 # Define rewards and penalty
-BASE_REWARD = -1
+BASE_REWARD = -5
 WIN_REWARD = 100
 DRAW_REWARD = 50
 LOSS_PENALTY = -100
