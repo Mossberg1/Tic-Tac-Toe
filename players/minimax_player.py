@@ -1,5 +1,4 @@
-# Import Modules
-from typing import Optional, Tuple, Dict, List, TYPE_CHECKING
+from typing import Optional, Tuple, Dict
 from players.player import Player
 from game.logic import TicTacToe
 from game.symbol import Symbol

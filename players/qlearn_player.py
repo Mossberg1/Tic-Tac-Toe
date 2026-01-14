@@ -1,4 +1,3 @@
-# Import Modules
 from players.player import Player
 from typing import Optional
 from game.logic import TicTacToe
